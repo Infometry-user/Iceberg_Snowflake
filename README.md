@@ -1,1 +1,2 @@
-# Iceberg_Snowflake
+Apache Iceberg Tables
+Apache Iceberg is an open-source table format that brings ACID transactions, time travel, schema evolution, and partition evolution to data lakes. This comprehensive guide covers Iceberg architecture, hands-on implementation across cloud platforms (AWS S3, Azure Data Lake Storage, Google Cloud Storage), and integration with Snowflake external volumes for enterprise data governance.
