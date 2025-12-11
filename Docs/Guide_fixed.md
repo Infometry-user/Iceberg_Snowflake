@@ -21,7 +21,7 @@ Configure an access policy to allow Snowflake to interact with the specific S3 b
 
 2.  Select the JSON tab and enter the following policy content:
 
-JSON
+```JSON
 
 {
 
@@ -66,16 +66,16 @@ JSON
 \]
 
 }
-
+```
 3.  Name the policy (e.g., snowflake_Iceberg_Policy) and create it.
 
 **Step 2: Create IAM Role and Trust Relationship**
 
 The IAM role is the security identity that Snowflake assumes when accessing your S3 bucket, instead of using long‑lived access keys. The trust relationship ensures that only the specific Snowflake IAM principal with the correct external ID can assume this role, preventing other AWS accounts from misusing it.
 
-```sql
+
 Create an IAM role that Snowflake will assume to access the data.
-```
+
 
 1.  Navigate to **IAM \> Roles \> Create role**.
 
@@ -93,7 +93,7 @@ Create an IAM role that Snowflake will assume to access the data.
 
 **Trust Relationship JSON:**
 
-JSON
+```JSON
 
 {
 
@@ -129,7 +129,7 @@ JSON
 
 }
 
-  
+```
 
 <img src="Guide_html_ee5f694e.png" id="Picture 16" data-align="bottom" data-border="0" width="618" height="297" />
 
@@ -139,9 +139,9 @@ JSON
 
 **2. Snowflake Storage Configuration**
 
-```sql
+
 Create an external volume that points to the S3 bucket and prefix where Iceberg table data and metadata will be stored. In the external volume definition, reference the IAM role ARN and external ID so Snowflake can access S3 securely without embedding AWS keys in SQL.​
-```
+
 
 **Step 1: Create External Volume**
 
@@ -149,7 +149,7 @@ The External Volume defines the storage location for Iceberg tables.
 
 ```sql
 CREATE OR REPLACE EXTERNAL VOLUME iceberg_snf_demo_ext_vol
-```
+
 
 STORAGE_LOCATIONS =
 
@@ -172,13 +172,13 @@ STORAGE_AWS_EXTERNAL_ID = 'WQ81422_SFCRole=6_yA5e+WIE7KTwpxpe36Rj6/cFnyo='
 )
 
 ALLOW_WRITES = TRUE;
-
+```
 **Verification:**
 
 Describe the external volume to ensure the storage locations, role ARN, and write permissions are correctly configured. Successful verification confirms that Snowflake can use this volume as the storage backend for Iceberg tables.
-
+```sql
 DESC EXTERNAL VOLUME iceberg_snf_demo_ext_vol;
-
+```
   
 
   
@@ -193,7 +193,7 @@ Initialize the Iceberg table using the previously created External Volume ('ICEB
 
 ```sql
 CREATE OR REPLACE ICEBERG TABLE ICERBERG_CUSTOMERS (
-```
+
 
 "ORDER_ID" TEXT,
 
@@ -212,12 +212,12 @@ CREATE OR REPLACE ICEBERG TABLE ICERBERG_CUSTOMERS (
 EXTERNAL_VOLUME = 'ICEBERG_SNF_DEMO_EXT_VOL'
 
 CATALOG = 'SNOWFLAKE';
-
+```
 **Step 2: Load Data**
 
 ```sql
 INSERT INTO ICEBERG_CUSTOMERS ("ORDER_ID", "CUSTOMER_ID", "ORDER_DATE", "PRODUCT_ID", "QUANTITY", "TOTAL_AMOUNT")
-```
+
 
 VALUES
 
@@ -260,6 +260,7 @@ VALUES
 ('O000019', 'C00172', '2024-09-18', 'P00090', 6, 1812.0),
 
 ('O000020', 'C00068', '2025-07-08', 'P00055', 8, 1080.0);
+```
 
 **Verify Iceberg Data:**
 
@@ -283,7 +284,7 @@ The following SQL commands validate the Iceberg table's ability to handle transa
 
 ```sql
 INSERT INTO CUSTOMERS ("ORDER_ID", "CUSTOMER_ID", "ORDER_DATE", "PRODUCT_ID", "QUANTITY", "TOTAL_AMOUNT")
-```
+
 
 VALUES (
 
@@ -301,11 +302,11 @@ VALUES (
 
 );
 
-  
+```
 
 ```sql
 INSERT INTO CUSTOMERS ("ORDER_ID", "CUSTOMER_ID", "ORDER_DATE", "PRODUCT_ID", "QUANTITY", "TOTAL_AMOUNT")
-```
+
 
 VALUES (
 
@@ -322,6 +323,7 @@ VALUES (
 500.5
 
 );
+```
 
 <img src="Guide_html_17815b50.png" id="Picture 1" data-align="bottom" data-border="0" width="602" height="235" />
 
@@ -329,7 +331,7 @@ VALUES (
 
 ```sql
 UPDATE CUSTOMERS
-```
+
 
 SET
 
@@ -340,7 +342,7 @@ SET
 WHERE
 
 "ORDER_ID" = 'O000001';
-
+```
   
 
 Before updating
@@ -357,9 +359,10 @@ After updating
 
 ```sql
 DELETE FROM CUSTOMERS
-```
+
 
 WHERE "ORDER_ID" = 'O000002';
+```
 
   
 
